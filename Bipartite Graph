@@ -1,0 +1,58 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5;
+vector<int> adj[N+1];
+int color[N+1];
+bool vis[N+1];
+
+//returns if the connected component contains invalid edge
+bool dfs(int node , int col){
+	vis[node] = true;
+	color[node] = col;
+
+	for(int v : adj[node]){
+		if(vis[v] == false){
+			bool result = dfs(v , col ^ 1);
+
+			if(result == true) return true;
+		}
+		else{
+			if(color[v] == col) return true;
+		}
+	}
+
+	return false;
+}
+
+
+int main(){
+
+	int n , m;
+	int a , b;
+
+	cin>>n>>m;
+
+	for(int i=0;i<m;i++){
+		cin>>a>>b;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+
+	//flag : whether graph contains invalid edge or not
+	bool flag = false;
+
+	for(int i=1;i<=n;i++)
+		if(vis[i] == false){
+			bool result = dfs(i , 0);
+
+			if(result == true){
+				flag = true;
+				break;
+			}
+		}
+
+	if(flag) cout<<"Graph is not bi-partite";
+	else	 cout<<"Graph is bi-partite";
+
+}
